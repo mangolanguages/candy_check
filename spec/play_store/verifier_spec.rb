@@ -1,23 +1,14 @@
 require 'spec_helper'
 
 describe CandyCheck::PlayStore::Verifier do
-  subject { CandyCheck::PlayStore::Verifier.new(config) }
-  let(:config) do
-    CandyCheck::PlayStore::Config
-      .new(
-        application_name: 'YourApplication',
-        application_version: '1.0',
-        issuer: 'abcdefg@developer.gserviceaccount.com',
-        key_file: 'local/google.p12',
-        key_secret: 'notasecret'
-      )
-  end
+  subject { CandyCheck::PlayStore::Verifier.new(config_key_path) }
+  let(:config_key_path) { 'path/to/google_play.json' }
   let(:package)    { 'the_package' }
   let(:product_id) { 'the_product' }
   let(:token)      { 'the_token' }
 
   it 'holds the config' do
-    subject.config.must_be_same_as config
+    subject.config_key_path.must_be_same_as config_key_path
   end
 
   it 'requires a boot before verification' do
@@ -29,7 +20,7 @@ describe CandyCheck::PlayStore::Verifier do
   it 'it configures and boots a client but raises on second boot!' do
     with_mocked_client do
       subject.boot!
-      @client.config.must_be_same_as config
+      @client.config_key_path.must_be_same_as config_key_path
       @client.booted.must_be_true
     end
 
@@ -102,7 +93,7 @@ describe CandyCheck::PlayStore::Verifier do
     end
   end
 
-  DummyPlayStoreClient = Struct.new(:config) do
+  DummyPlayStoreClient = Struct.new(:config_key_path) do
     attr_reader :booted
     def boot!
       @booted = true

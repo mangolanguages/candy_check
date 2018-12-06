@@ -27,18 +27,12 @@ module CandyCheck
       # @return [VerificationFailure] otherwise
       def call!
         verify!
-        if valid?
-          Receipt.new(@response)
-        else
-          VerificationFailure.new(@response['error'])
-        end
+        Receipt.new(@response)
+      rescue Google::Apis::Error => e
+        VerificationFailure.new(e)
       end
 
       private
-
-      def valid?
-        @response && @response['purchaseState'] && @response['consumptionState']
-      end
 
       def verify!
         @response = @client.verify(package, product_id, token)

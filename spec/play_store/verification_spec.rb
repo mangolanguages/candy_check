@@ -11,13 +11,13 @@ describe CandyCheck::PlayStore::Verification do
 
   describe 'valid' do
     let(:response) do
-      {
+      Google::Apis::AndroidpublisherV3::ProductPurchase.from_json(JSON.dump({
         'kind' => 'androidpublisher#productPurchase',
         'purchaseTimeMillis' => '1421676237413',
         'purchaseState' => 0,
         'consumptionState' => 0,
         'developerPayload' => 'payload that gets stored and returned'
-      }
+      }))
     end
 
     it 'calls the client with the correct paramters' do
@@ -37,30 +37,13 @@ describe CandyCheck::PlayStore::Verification do
 
   describe 'failure' do
     let(:response) do
-      {
-        'error' => {
-          'code'    => 401,
-          'message' => 'The current user has insufficient permissions'
-        }
-      }
+      Google::Apis::ClientError.new(RuntimeError.new("The current user has insufficient permissions"), status_code: 401)
     end
 
     it 'returns a verification failure' do
       result = subject.call!
       result.must_be_instance_of CandyCheck::PlayStore::VerificationFailure
       result.code.must_equal 401
-    end
-  end
-
-  describe 'empty' do
-    let(:response) do
-      {}
-    end
-
-    it 'returns a verification failure' do
-      result = subject.call!
-      result.must_be_instance_of CandyCheck::PlayStore::VerificationFailure
-      result.code.must_equal(-1)
     end
   end
 
@@ -75,7 +58,14 @@ describe CandyCheck::PlayStore::Verification do
       @package = package
       @product_id = product_id
       @token = token
-      response
+      
+      # Are we expecting an Exception?
+      if response.is_a?(Google::Apis::ClientError)
+        raise response
+      end
+
+      return response
     end
   end
+
 end

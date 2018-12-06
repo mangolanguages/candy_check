@@ -8,19 +8,19 @@ module CandyCheck
       class BootRequiredError < RuntimeError; end
 
       # @return [Config] the current configuration
-      attr_reader :config
+      attr_reader :config_key_path
 
       # Initializes a new verifier for the application which is bound
       # to a configuration
       # @param config [Config]
-      def initialize(config)
-        @config = config
+      def initialize(config_key_path)
+        @config_key_path = config_key_path
       end
 
       # Boot the module
       def boot!
         boot_error('You\'re only allowed to boot the verifier once') if booted?
-        @client = Client.new(config)
+        @client = Client.new(config_key_path)
         @client.boot!
       end
 

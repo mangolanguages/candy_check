@@ -1,8 +1,9 @@
-require 'google/api_client'
+require 'googleauth'
+require 'googleauth/web_user_authorizer'
+require 'google/apis/androidpublisher_v3'
+require 'google/apis/errors'
 
-require 'candy_check/play_store/discovery_repository'
 require 'candy_check/play_store/client'
-require 'candy_check/play_store/config'
 require 'candy_check/play_store/receipt'
 require 'candy_check/play_store/subscription'
 require 'candy_check/play_store/verification'

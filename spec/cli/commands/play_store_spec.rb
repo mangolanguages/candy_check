@@ -3,19 +3,11 @@ require 'spec_helper'
 describe CandyCheck::CLI::Commands::PlayStore do
   include WithCommand
   subject { CandyCheck::CLI::Commands::PlayStore }
-  let(:arguments) { [package, product_id, token, options] }
+  let(:arguments) { [package, product_id, token, client_secrets_path] }
   let(:package)    { 'the_package' }
   let(:product_id) { 'the_product' }
   let(:token)      { 'the_token' }
-  let(:options) do
-    {
-      application_name: 'YourApplication',
-      application_version: '1.0',
-      issuer: 'abcdefg@developer.gserviceaccount.com',
-      key_file: 'local/google.p12',
-      key_secret: 'notasecret'
-    }
-  end
+  let(:client_secrets_path) { 'path/to/key.json' }
 
   before do
     stub = proc do |*args|
@@ -27,16 +19,14 @@ describe CandyCheck::CLI::Commands::PlayStore do
   end
 
   it 'calls and outputs the verifier' do
-    options.each do |k, v|
-      @verifier.config.public_send(k).must_equal v
-    end
+    @verifier.public_send(:config_key_path).must_equal client_secrets_path
     @verifier.arguments.must_equal [package, product_id, token]
     out.must_be 'Hash:', result: :stubbed
   end
 
   private
 
-  DummyPlayStoreVerifier = Struct.new(:config) do
+  DummyPlayStoreVerifier = Struct.new(:config_key_path) do
     attr_reader :arguments, :booted
 
     def boot!
