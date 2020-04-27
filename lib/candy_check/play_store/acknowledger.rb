@@ -42,7 +42,7 @@ module CandyCheck
       # @param token [String] to use for authentication
       # @return [Receipt] if successful
       # @return [VerificationFailure] otherwise
-      def verify_subscription(package, subscription_id, token)
+      def acknowledge_subscription(package, subscription_id, token)
         check_boot!
         v = SubscriptionAcknowledgement.new(
           @client, package, subscription_id, token
