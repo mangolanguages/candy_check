@@ -22,6 +22,12 @@ describe CandyCheck::PlayStore::SubscriptionAcknowledgement do
     end
   end
 
+  describe 'success' do
+    it 'returns `true`' do
+      subject.call!.must_equal true
+    end
+  end
+
   describe 'failure' do
     let(:response) { Google::Apis::ClientError.new(RuntimeError.new('The current user has insufficient permissions'), status_code: 401) }
 
@@ -39,7 +45,7 @@ describe CandyCheck::PlayStore::SubscriptionAcknowledgement do
 
     def boot!; end
 
-    def acknowledge_subscription_purchase(package, product_id, token)
+    def acknowledge_purchase_subscription(package, product_id, token)
       @package = package
       @product_id = product_id
       @token = token
@@ -47,7 +53,7 @@ describe CandyCheck::PlayStore::SubscriptionAcknowledgement do
       # Are we expecting an Exception?
       raise response if response.is_a?(Google::Apis::ClientError)
 
-      response
+      nil
     end
   end
 end
