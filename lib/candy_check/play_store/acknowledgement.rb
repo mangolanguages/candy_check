@@ -23,11 +23,11 @@ module CandyCheck
       end
 
       # Performs the verification against the remote server
-      # @return [Receipt] if successful
+      # @return [true] if successful
       # @return [AcknowledgementFailure] otherwise
       def call!
         acknowledge!
-        Receipt.new(@response)
+        true
       rescue Google::Apis::Error => e
         AcknowledgementFailure.new(e)
       end
@@ -35,7 +35,8 @@ module CandyCheck
       private
 
       def acknowledge!
-        @response = @client.acknowledge(package, product_id, token)
+        # This client method returns `nil` on success.
+        @client.acknowledge_purchase_product(package, product_id, token)
       end
     end
   end

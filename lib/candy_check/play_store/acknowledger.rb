@@ -24,7 +24,7 @@ module CandyCheck
         @client.boot!
       end
 
-      # Contacts the Google API and acknowledges the product purchase
+      # Contacts the Google API and acknowledges the inapp product purchase
       # @param package [String] to query
       # @param product_id [String] to query
       # @param token [String] to use for authentication
