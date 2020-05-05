@@ -4,7 +4,7 @@ module CandyCheck
     # The call return {true} or an {AcknowledgementFailure}
     class SubscriptionAcknowledgement < Acknowledgement
       # Performs the acknowledgement against the remote server
-      # @return [Subscription] if successful
+      # @return true if successful
       # @return [AcknowledgementFailure] otherwise
       def call!
         acknowledge!
