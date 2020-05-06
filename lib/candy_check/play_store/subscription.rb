@@ -15,6 +15,12 @@ module CandyCheck
       # The payment failed during processing (cancelReason)
       PAYMENT_FAILED = 1
 
+      # The subscription purchase has been acknowledged
+      ACKNOWLEDGED = "Acknowledged"
+
+      # The subscription purchase has not yet been acknowledged
+      NOT_ACKNOWLEDGED = "Yet to be acknowledged"
+
       # Initializes a new instance which bases on a JSON result
       # from Google's servers
       # @param attributes [Hash]
@@ -119,6 +125,14 @@ module CandyCheck
       # @return [Integer]
       def expiry_time_millis
         @receipt.expiry_time_millis
+      end
+
+      # Get current acknowledgement state for subscription. 
+      # @return [String] one of:
+      #  - ACKNOWLEDGED = "Acknowledged"
+      #  - NOT_ACKNOWLEDGED = "Yet to be acknowledged"
+      def acknowledgement_state
+        @receipt.acknowledgement_state
       end
 
       # Get start time in UTC
