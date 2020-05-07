@@ -73,7 +73,7 @@ module CandyCheck
       # @param subscription_id [String] the subscription's ID
       # @param token [String] the purchase token
       # @return [void]
-      def acknowledge_subscription_purchase(package, subscription_id, token)
+      def acknowledge_purchase_subscription(package, subscription_id, token)
         @api_client.acknowledge_purchase_subscription(
           package,
           subscription_id,
