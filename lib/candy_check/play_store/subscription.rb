@@ -16,10 +16,10 @@ module CandyCheck
       PAYMENT_FAILED = 1
 
       # The subscription purchase has been acknowledged
-      ACKNOWLEDGED = "Acknowledged"
+      ACKNOWLEDGED = 1
 
       # The subscription purchase has not yet been acknowledged
-      NOT_ACKNOWLEDGED = "Yet to be acknowledged"
+      NOT_ACKNOWLEDGED = 0
 
       # Initializes a new instance which bases on a JSON result
       # from Google's servers
@@ -128,9 +128,9 @@ module CandyCheck
       end
 
       # Get current acknowledgement state for subscription. 
-      # @return [String] one of:
-      #  - ACKNOWLEDGED = "Acknowledged"
-      #  - NOT_ACKNOWLEDGED = "Yet to be acknowledged"
+      # @return [Integer] one of:
+      #  - ACKNOWLEDGED = 1
+      #  - NOT_ACKNOWLEDGED = 0
       def acknowledgement_state
         @receipt.acknowledgement_state
       end

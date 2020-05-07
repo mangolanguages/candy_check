@@ -23,7 +23,7 @@ describe CandyCheck::PlayStore::SubscriptionVerification do
           'developerPayload' => 'payload that gets stored and returned',
           'cancelReason' => 0,
           'paymentState' => '1',
-          'acknowledgementState' => 'Acknowledged'
+          'acknowledgementState' => 1
         )
       )
     end
