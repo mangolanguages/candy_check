@@ -10,7 +10,7 @@ describe CandyCheck::PlayStore::SubscriptionVerification do
   let(:package)    { 'the_package' }
   let(:product_id) { 'the_product' }
   let(:token)      { 'the_token' }
-  let(:acknowledgement_state) { 'Acknowledged' }
+  let(:acknowledgement_state) { 1 }
 
   describe 'valid' do
     let(:response) do
