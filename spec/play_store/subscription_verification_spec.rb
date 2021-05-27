@@ -10,6 +10,7 @@ describe CandyCheck::PlayStore::SubscriptionVerification do
   let(:package)    { 'the_package' }
   let(:product_id) { 'the_product' }
   let(:token)      { 'the_token' }
+  let(:acknowledgement_state) { 1 }
 
   describe 'valid' do
     let(:response) do
@@ -21,7 +22,8 @@ describe CandyCheck::PlayStore::SubscriptionVerification do
           'autoRenewing' => false,
           'developerPayload' => 'payload that gets stored and returned',
           'cancelReason' => 0,
-          'paymentState' => '1'
+          'paymentState' => '1',
+          'acknowledgementState' => 1
         )
       )
     end
@@ -37,6 +39,7 @@ describe CandyCheck::PlayStore::SubscriptionVerification do
       result = subject.call!
       result.must_be_instance_of CandyCheck::PlayStore::Subscription
       result.expired?.must_be_true
+      result.acknowledgement_state.must_equal acknowledgement_state
     end
   end
 

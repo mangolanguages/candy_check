@@ -67,6 +67,20 @@ module CandyCheck
         )
       end
 
+      # Acknowledges a subscription purchase.
+      # @param package [String] the app's package name
+      #   for example, 'com.some.thing').
+      # @param subscription_id [String] the subscription's ID
+      # @param token [String] the purchase token
+      # @return [void]
+      def acknowledge_purchase_subscription(package, subscription_id, token)
+        @api_client.acknowledge_purchase_subscription(
+          package,
+          subscription_id,
+          token
+        )
+      end
+
       private
 
       attr_reader :config, :api_client
