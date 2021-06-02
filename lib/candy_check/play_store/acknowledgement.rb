@@ -1,8 +1,8 @@
 module CandyCheck
   module PlayStore
-    # Verifies a purchase token against the Google API
-    # The call return either an {Receipt} or an {VerificationFailure}
-    class Verification
+    # Acknowedges a subscription purchase with the Google API.
+    # The call return either an {Receipt} or a {VerificationFailure}
+    class Acknowledgement
       # @return [String] the package which will be queried
       attr_reader :package
       # @return [String] the item id which will be queried
@@ -23,19 +23,20 @@ module CandyCheck
       end
 
       # Performs the verification against the remote server
-      # @return [Receipt] if successful
-      # @return [VerificationFailure] otherwise
+      # @return [true] if successful
+      # @return [AcknowledgementFailure] otherwise
       def call!
-        verify!
-        Receipt.new(@response)
+        acknowledge!
+        true
       rescue Google::Apis::Error => e
-        VerificationFailure.new(e)
+        AcknowledgementFailure.new(e)
       end
 
       private
 
-      def verify!
-        @response = @client.verify(package, product_id, token)
+      def acknowledge!
+        # This client method returns `nil` on success.
+        @client.acknowledge_purchase_product(package, product_id, token)
       end
     end
   end

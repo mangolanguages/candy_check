@@ -8,19 +8,12 @@ module CandyCheck
       # @return [VerificationFailure] otherwise
       def call!
         verify!
-        if valid?
-          Subscription.new(@response)
-        else
-          VerificationFailure.new(@response['error'])
-        end
+        Subscription.new(@response)
+      rescue Google::Apis::Error => e
+        VerificationFailure.new(e)
       end
 
       private
-
-      def valid?
-        ok_kind = @response['kind'] == 'androidpublisher#subscriptionPurchase'
-        @response && @response['expiryTimeMillis'] && ok_kind
-      end
 
       def verify!
         @response = @client.verify_subscription(package, product_id, token)

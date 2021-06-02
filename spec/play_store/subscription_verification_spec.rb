@@ -10,18 +10,22 @@ describe CandyCheck::PlayStore::SubscriptionVerification do
   let(:package)    { 'the_package' }
   let(:product_id) { 'the_product' }
   let(:token)      { 'the_token' }
+  let(:acknowledgement_state) { 1 }
 
   describe 'valid' do
     let(:response) do
-      {
-        'kind' => 'androidpublisher#subscriptionPurchase',
-        'startTimeMillis' => '1459540113244',
-        'expiryTimeMillis' => '1462132088610',
-        'autoRenewing' => false,
-        'developerPayload' => 'payload that gets stored and returned',
-        'cancelReason' => 0,
-        'paymentState' => '1'
-      }
+      Google::Apis::AndroidpublisherV3::SubscriptionPurchase.from_json(
+        JSON.dump(
+          'kind' => 'androidpublisher#subscriptionPurchase',
+          'startTimeMillis' => 1_459_540_113_244,
+          'expiryTimeMillis' => 1_462_132_088_610,
+          'autoRenewing' => false,
+          'developerPayload' => 'payload that gets stored and returned',
+          'cancelReason' => 0,
+          'paymentState' => '1',
+          'acknowledgementState' => 1
+        )
+      )
     end
 
     it 'calls the client with the correct paramters' do
@@ -35,48 +39,17 @@ describe CandyCheck::PlayStore::SubscriptionVerification do
       result = subject.call!
       result.must_be_instance_of CandyCheck::PlayStore::Subscription
       result.expired?.must_be_true
+      result.acknowledgement_state.must_equal acknowledgement_state
     end
   end
 
   describe 'failure' do
-    let(:response) do
-      {
-        'error' => {
-          'code'    => 401,
-          'message' => 'The current user has insufficient permissions'
-        }
-      }
-    end
+    let(:response) { Google::Apis::ClientError.new(RuntimeError.new('The current user has insufficient permissions'), status_code: 401) }
 
     it 'returns a verification failure' do
       result = subject.call!
       result.must_be_instance_of CandyCheck::PlayStore::VerificationFailure
       result.code.must_equal 401
-    end
-  end
-
-  describe 'empty' do
-    let(:response) do
-      {}
-    end
-
-    it 'returns a verification failure' do
-      result = subject.call!
-      result.must_be_instance_of CandyCheck::PlayStore::VerificationFailure
-      result.code.must_equal(-1)
-    end
-  end
-
-  describe 'invalid response kind' do
-    let(:response) do
-      {
-        'kind' => 'something weird'
-      }
-    end
-
-    it 'returns a verification failure' do
-      result = subject.call!
-      result.must_be_instance_of CandyCheck::PlayStore::VerificationFailure
     end
   end
 
@@ -91,6 +64,10 @@ describe CandyCheck::PlayStore::SubscriptionVerification do
       @package = package
       @product_id = product_id
       @token = token
+
+      # Are we expecting an Exception?
+      raise response if response.is_a?(Google::Apis::ClientError)
+
       response
     end
   end

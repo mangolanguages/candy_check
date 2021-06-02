@@ -1,8 +1,8 @@
 module CandyCheck
   module PlayStore
-    # Verifies purchase tokens against the Google API.
+    # Acknowledges purchased subscriptions with the Google API.
     # The call return either an {Receipt} or a {VerificationFailure}
-    class Verifier
+    class Acknowledger
       # Error thrown when the verifier isn't booted before the first
       # verification check or on double invocation
       class BootRequiredError < RuntimeError; end
@@ -19,21 +19,21 @@ module CandyCheck
 
       # Boot the module
       def boot!
-        boot_error('You\'re only allowed to boot the verifier once') if booted?
+        boot_error('You\'re only allowed to boot the acknowledger once') if booted?
         @client = Client.new(config_key_path)
         @client.boot!
       end
 
-      # Contacts the Google API and requests the product state
+      # Contacts the Google API and acknowledges the inapp product purchase
       # @param package [String] to query
       # @param product_id [String] to query
       # @param token [String] to use for authentication
       # @return [Receipt] if successful
-      # @return [VerificationFailure] otherwise
-      def verify(package, product_id, token)
+      # @return [AcknowledgementFailure] otherwise
+      def acknowledge(package, product_id, token)
         check_boot!
-        verification = Verification.new(@client, package, product_id, token)
-        verification.call!
+        acknowledgement = Acknowledgement.new(@client, package, product_id, token)
+        acknowledgement.call!
       end
 
       # Contacts the Google API and requests the product state
@@ -42,9 +42,9 @@ module CandyCheck
       # @param token [String] to use for authentication
       # @return [Receipt] if successful
       # @return [VerificationFailure] otherwise
-      def verify_subscription(package, subscription_id, token)
+      def acknowledge_subscription(package, subscription_id, token)
         check_boot!
-        v = SubscriptionVerification.new(
+        v = SubscriptionAcknowledgement.new(
           @client, package, subscription_id, token
         )
         v.call!
@@ -58,7 +58,7 @@ module CandyCheck
 
       def check_boot!
         return if booted?
-        boot_error 'You need to boot the verifier service first: '\
+        boot_error 'You need to boot the acknowledger service first: '\
                    'CandyCheck::PlayStore::Verifier#boot!'
       end
 

@@ -7,32 +7,21 @@ module CandyCheck
         # @param package [String]
         # @param product_id [String]
         # @param token [String]
-        # @param options [Hash]
-        # @option options [String] :issuer to use for API access
-        # @option options [String] :key_file to use for API access
-        # @option options [String] :key_secret to decrypt the key file
-        # @option options [String] :application_name for the API call
-        # @option options [String] :application_version for the API call
-        def initialize(package, product_id, token, options)
+        # @param client_secrets_path [String]
+        def initialize(package, product_id, token, client_secrets_path)
           @package = package
           @product_id = product_id
           @token = token
-          super(options)
+          super({ client_secrets_path: client_secrets_path })
         end
 
         # Print the result of the verification to the terminal
         def run
-          verifier = CandyCheck::PlayStore::Verifier.new(config)
+          verifier = CandyCheck::PlayStore::Verifier.new(options[:client_secrets_path])
           verifier.boot!
           result = verifier.verify(@package, @product_id, @token)
           out.print "#{result.class}:"
           out.pretty result
-        end
-
-        private
-
-        def config
-          CandyCheck::PlayStore::Config.new(options)
         end
       end
     end

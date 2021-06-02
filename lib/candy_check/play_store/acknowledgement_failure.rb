@@ -1,7 +1,7 @@
 module CandyCheck
   module PlayStore
     # Represents a failing call against the Google API server
-    class VerificationFailure
+    class AcknowledgementFailure
 
       attr_reader :error
 
